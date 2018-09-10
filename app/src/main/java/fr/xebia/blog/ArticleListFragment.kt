@@ -1,6 +1,8 @@
 package fr.xebia.blog
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -21,8 +23,8 @@ class ArticleListFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_article_list, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
         viewModel = ViewModelProviders.of(this).get(ArticleListViewModel::class.java)
     }
 
@@ -30,10 +32,7 @@ class ArticleListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val adapter = ArticleAdapter()
-        adapter.submitList(listOf(
-                Article(title = "Title 1", content = "Content 1"),
-                Article(title = "Title 2", content = "Content 2")
-        ))
+        viewModel.articles.observe(this, Observer(adapter::submitList))
         artListRv.adapter = adapter
     }
 }
